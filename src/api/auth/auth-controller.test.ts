@@ -2,7 +2,8 @@ import { UserModel } from '../users/users-schema';
 import { Request, Response } from 'express';
 import { registerUserController } from './auth-controller';
 import { encryptPassword } from './auth-utils';
-
+import dotenv from 'dotenv';
+dotenv.config();
 describe('Given an auth-controller', () => {
   const request = {
     body: {
