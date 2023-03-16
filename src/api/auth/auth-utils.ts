@@ -1,5 +1,7 @@
 import crypto from 'node:crypto';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+
 dotenv.config();
 export const createCypher = () => {
   if (process.env.PASSWORD_ENCRYPTION_ALGORITHM === undefined) {
@@ -29,4 +31,12 @@ export const encryptPassword = (password: string) => {
   let encryptedPassword = cipher.update(password);
   encryptedPassword = Buffer.concat([encryptedPassword, cipher.final()]);
   return encryptedPassword.toString('hex');
+};
+
+export const generateJWTToken = (email: string) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment should be defined');
+  }
+
+  return jwt.sign({ email }, process.env.JWT_SECRET);
 };
