@@ -4,9 +4,5 @@ export default {
   testEnvironment: 'node',
   testMatch: ['**/src/**/*.test.ts'],
   resolver: 'jest-ts-webcompat-resolver',
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/server.ts',
-    '!src/database/connection.ts',
-  ],
+  collectCoverageFrom: ['src/**/*.ts', '!src/server.ts'],
 };
