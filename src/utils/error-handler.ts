@@ -21,5 +21,5 @@ export const errorHandler = (
   }
 
   log.error(err);
-  res.status(500).json({ msg: err.message.toUpperCase() });
+  res.status(500).json({ msg: err.message });
 };
