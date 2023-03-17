@@ -130,6 +130,7 @@ describe('Given an auth-controller', () => {
     );
 
     expect(response.json).toHaveBeenCalledWith({
+      msg: 'Welcome to ChoriPlaneo!',
       accessToken: generateJWTToken(request.body.email),
     });
     expect(response.status).toHaveBeenCalledWith(201);
