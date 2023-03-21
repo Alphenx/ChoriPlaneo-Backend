@@ -16,26 +16,26 @@ describe('Given a getPlansController function from plans-controller', () => {
 
   const next = jest.fn();
 
-  const plans = [
+  const foundPlans = [
     {
-      title: 'My choriplan',
-      description: 'Chori description',
+      creationDate: 1679390950982,
       creatorId: '1234',
-      place: 'Malaga',
-      status: true,
       date: '10/01/2000',
-      creationDate: Date.now(),
+      description: 'Chori description',
+      place: 'Malaga',
       planImgURL: 'string',
       registeredUsers: [],
+      status: true,
+      title: 'My choriplan',
     },
   ];
 
   test('When the database response is successfull, then it should respond with a list of plans', async () => {
     PlanModel.find = jest.fn().mockImplementation(() => ({
-      exec: jest.fn().mockResolvedValue(plans),
+      exec: jest.fn().mockResolvedValue(foundPlans),
     }));
     await getPlansController(request, response as Response, next);
-    expect(response.json).toHaveBeenCalledWith(plans);
+    expect(response.json).toHaveBeenCalledWith({ plans: foundPlans });
   });
 
   test('When the database throws an error then it should respond with status 500', async () => {
@@ -53,8 +53,8 @@ describe('Given a getPlanByIdController from plans-controller', () => {
   const mockedId = '123213';
 
   const request = {
-    params: { planId: mockedId },
-  } as Partial<Request>;
+    params: { planId: '123213' },
+  } as Partial<Request<{ planId: string }>>;
 
   const response = {
     status: jest.fn().mockReturnThis(),
@@ -65,15 +65,17 @@ describe('Given a getPlanByIdController from plans-controller', () => {
   const next = jest.fn();
 
   const plan = {
-    title: 'My choriplan',
-    description: 'Chori description',
-    creatorId: '1234',
-    place: 'Malaga',
-    status: true,
-    date: '10/01/2000',
-    creationDate: Date.now(),
-    planImgURL: 'string',
-    registeredUsers: [],
+    plans: {
+      title: 'My choriplan',
+      description: 'Chori description',
+      creatorId: '1234',
+      place: 'Malaga',
+      status: true,
+      date: '10/01/2000',
+      creationDate: Date.now(),
+      planImgURL: 'string',
+      registeredUsers: [],
+    },
   };
 
   test('When the plan exists then it should respond with a plan', async () => {
@@ -82,9 +84,13 @@ describe('Given a getPlanByIdController from plans-controller', () => {
       exec: jest.fn().mockResolvedValue(plan),
     }));
 
-    await getPlanByIdController(request as Request, response as Response, next);
+    await getPlanByIdController(
+      request as Request<{ planId: string }>,
+      response as Response,
+      next,
+    );
 
-    expect(response.json).toHaveBeenCalledWith(plan);
+    expect(response.json).toHaveBeenCalledWith({ plans: plan });
     expect(PlanModel.findById).toHaveBeenCalledWith(
       { _id: mockedId },
       queryProjectionPlan,
@@ -97,7 +103,11 @@ describe('Given a getPlanByIdController from plans-controller', () => {
       exec: jest.fn().mockResolvedValue(null),
     }));
     const expectedError = new CustomHTTPError(404, 'Plan not found.');
-    await getPlanByIdController(request as Request, response as Response, next);
+    await getPlanByIdController(
+      request as Request<{ planId: string }>,
+      response as Response,
+      next,
+    );
 
     expect(next).toHaveBeenCalledWith(expectedError);
 
