@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import { User } from '../users/users-schema.js';
 
 export interface Plan {
-  creatorId: string;
+  creator: User;
   title: string;
   description: string;
   place: string;
@@ -13,7 +13,7 @@ export interface Plan {
 }
 
 const planSchema = new Schema<Plan>({
-  creatorId: String,
+  creator: { type: Schema.Types.ObjectId, ref: 'User' },
   title: String,
   description: String,
   place: String,
