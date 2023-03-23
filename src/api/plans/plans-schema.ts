@@ -6,7 +6,7 @@ export interface Plan {
   title: string;
   description: string;
   place: string;
-  status: boolean;
+  status: string | undefined;
   date: Date;
   planImgURL: string;
   registeredUsers: User[];
@@ -17,7 +17,7 @@ const planSchema = new Schema<Plan>({
   title: String,
   description: String,
   place: String,
-  status: Boolean,
+  status: String,
   date: Date,
   planImgURL: String,
   registeredUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
