@@ -4,6 +4,7 @@ import { loginUserController, registerUserController } from './auth-controller';
 import { encryptPassword, generateJWTToken } from './auth-utils';
 import dotenv from 'dotenv';
 import { CustomHTTPError } from '../../utils/custom-http-error';
+import mongoose from 'mongoose';
 dotenv.config();
 
 const OLD_ENV = process.env;
@@ -119,19 +120,20 @@ describe('Given an auth-controller', () => {
   });
 
   test('When the user exists, then it should return the access token', async () => {
-    UserModel.findOne = jest
-      .fn()
-      .mockReturnValue({ exec: jest.fn().mockResolvedValue(1) });
+    const mockedExistingUser = {
+      _id: new mongoose.Types.ObjectId('123456789123456789123456'),
+      email: request.body.email,
+      password: encryptPassword(request.body.password),
+    };
+    UserModel.findOne = jest.fn().mockReturnValue({
+      exec: jest.fn().mockResolvedValue(mockedExistingUser),
+    });
 
-    await loginUserController(
-      request as Request,
-      response as Response,
-      next as NextFunction,
-    );
+    await loginUserController(request as Request, response as Response, next);
 
     expect(response.json).toHaveBeenCalledWith({
       msg: 'Welcome to ChoriPlaneo!',
-      accessToken: generateJWTToken(request.body.email),
+      accessToken: generateJWTToken(mockedExistingUser._id.toString()),
     });
     expect(response.status).toHaveBeenCalledWith(201);
   });

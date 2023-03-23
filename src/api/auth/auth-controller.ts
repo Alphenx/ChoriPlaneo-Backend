@@ -55,7 +55,7 @@ export const loginUserController: RequestHandler<
       );
     }
 
-    const userToken = generateJWTToken(email);
+    const userToken = generateJWTToken(existingUser._id.toString());
     return res.status(201).json({
       msg: 'Welcome to ChoriPlaneo!',
       accessToken: userToken,
