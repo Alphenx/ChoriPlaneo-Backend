@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express';
 import { CustomHTTPError } from '../../utils/custom-http-error.js';
 import { UserModel } from '../users/users-schema.js';
-import { queryProjectionPopulated } from '../users/users-types.js';
 
 import { Plan, PlanModel } from './plans-schema.js';
 import {
@@ -18,7 +17,9 @@ export const getPlansController: RequestHandler<
     const foundPlans = await PlanModel.find({}, queryProjectionPlan)
       .populate('creator', queryProjectionCreator)
       .exec();
-    res.json({ plans: foundPlans });
+
+    const publicPlans = foundPlans.filter(plan => plan.status);
+    res.json({ plans: publicPlans });
   } catch (error) {
     next(error);
   }
@@ -32,7 +33,7 @@ export const getPlanByIdController: RequestHandler<
   try {
     const plan = await PlanModel.findById({ _id: planId }, queryProjectionPlan)
       .populate('creator', queryProjectionCreator)
-      .populate('registeredUsers', queryProjectionPopulated)
+      .populate('registeredUsers', queryProjectionCreator)
       .exec();
 
     if (plan === null) {
