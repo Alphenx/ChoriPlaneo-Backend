@@ -104,7 +104,7 @@ describe('Given a getUserByIdController from users-controller', () => {
   });
 });
 
-describe('Given a getUserByEmailController from users-controller', () => {
+describe('Given a getUserInfoController from users-controller', () => {
   const mockedId = '123213';
 
   const request = {} as Partial<Request>;
@@ -156,7 +156,7 @@ describe('Given a getUserByEmailController from users-controller', () => {
     expect(next).toHaveBeenCalledWith(expectedError);
 
     expect(UserModel.findOne).toHaveBeenCalledWith(
-      { id: mockedId },
+      { _id: mockedId },
       queryProjection,
     );
   });
