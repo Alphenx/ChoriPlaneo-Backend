@@ -8,6 +8,7 @@ export interface User {
   profileURL: string;
   friends: User[];
   recommendedPlans: Plan[];
+  savedPlans: Plan[];
   createdPlans: Plan[];
 }
 
@@ -18,6 +19,7 @@ const userSchema = new Schema<User>({
   profileURL: String,
   friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   recommendedPlans: [{ type: Schema.Types.ObjectId, ref: 'Plan' }],
+  savedPlans: [{ type: Schema.Types.ObjectId, ref: 'Plan' }],
   createdPlans: [{ type: Schema.Types.ObjectId, ref: 'Plan' }],
 });
 
