@@ -37,8 +37,20 @@ export const getUserInfoController: RequestHandler = async (req, res, next) => {
   const { id } = res.locals;
   try {
     const user = await UserModel.findOne({ _id: id }, queryProjection)
-      .populate('recommendedPlans')
-      .populate('savedPlans')
+      .populate({
+        path: 'recommendedPlans',
+        populate: {
+          path: 'creator',
+          select: 'name email',
+        },
+      })
+      .populate({
+        path: 'savedPlans',
+        populate: {
+          path: 'creator',
+          select: 'name email',
+        },
+      })
       .populate('createdPlans')
       .exec();
 
