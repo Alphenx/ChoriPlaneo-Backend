@@ -1,0 +1,365 @@
+{
+  "info": {
+    "_postman_id": "5635e455-8f0e-47c7-88eb-ecd47b85e5c5",
+    "name": "ChoriPlaneo API Docs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "25667733"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Api\",\r\n    \"email\":\"api@api.com\",\r\n    \"password\":\"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://adrian-garcia-final-project-back-202301.onrender.com/auth/register",
+              "protocol": "https",
+              "host": [
+                "adrian-garcia-final-project-back-202301",
+                "onrender",
+                "com"
+              ],
+              "path": ["auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"api@api.com\",\r\n    \"password\":\"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://adrian-garcia-final-project-back-202301.onrender.com/auth/login",
+              "protocol": "https",
+              "host": [
+                "adrian-garcia-final-project-back-202301",
+                "onrender",
+                "com"
+              ],
+              "path": ["auth", "login"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Plans",
+      "item": [
+        {
+          "name": "Get all plans",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjU5MzJiMTExNTBmMmE5MmQ2ZTYzZiIsImlhdCI6MTY4MDE4NDI3Nn0.urMfizN32NB0m4LK0mgMoEQyAESjZntSUZmsqREQEsE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://adrian-garcia-final-project-back-202301.onrender.com/api/v1/plans",
+              "protocol": "https",
+              "host": [
+                "adrian-garcia-final-project-back-202301",
+                "onrender",
+                "com"
+              ],
+              "path": ["api", "v1", "plans"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get plan by ID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjU5MzJiMTExNTBmMmE5MmQ2ZTYzZiIsImlhdCI6MTY4MDE4NDI3Nn0.urMfizN32NB0m4LK0mgMoEQyAESjZntSUZmsqREQEsE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://adrian-garcia-final-project-back-202301.onrender.com/api/v1/plans/642540b4f9d134828c9eadaa",
+              "protocol": "https",
+              "host": [
+                "adrian-garcia-final-project-back-202301",
+                "onrender",
+                "com"
+              ],
+              "path": ["api", "v1", "plans", "642540b4f9d134828c9eadaa"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get all users",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjU5MzJiMTExNTBmMmE5MmQ2ZTYzZiIsImlhdCI6MTY4MDE4NDI3Nn0.urMfizN32NB0m4LK0mgMoEQyAESjZntSUZmsqREQEsE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://adrian-garcia-final-project-back-202301.onrender.com/api/v1/users",
+              "protocol": "https",
+              "host": [
+                "adrian-garcia-final-project-back-202301",
+                "onrender",
+                "com"
+              ],
+              "path": ["api", "v1", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get logged user info",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjU5MzJiMTExNTBmMmE5MmQ2ZTYzZiIsImlhdCI6MTY4MDE4NDI3Nn0.urMfizN32NB0m4LK0mgMoEQyAESjZntSUZmsqREQEsE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://adrian-garcia-final-project-back-202301.onrender.com/api/v1/users/info",
+              "protocol": "https",
+              "host": [
+                "adrian-garcia-final-project-back-202301",
+                "onrender",
+                "com"
+              ],
+              "path": ["api", "v1", "users", "info"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get user by ID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjU5MzJiMTExNTBmMmE5MmQ2ZTYzZiIsImlhdCI6MTY4MDE4NDI3Nn0.urMfizN32NB0m4LK0mgMoEQyAESjZntSUZmsqREQEsE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://adrian-garcia-final-project-back-202301.onrender.com/api/v1/users/64230b56f54dce5b498022da",
+              "protocol": "https",
+              "host": [
+                "adrian-garcia-final-project-back-202301",
+                "onrender",
+                "com"
+              ],
+              "path": ["api", "v1", "users", "64230b56f54dce5b498022da"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add friend by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjU5MzJiMTExNTBmMmE5MmQ2ZTYzZiIsImlhdCI6MTY4MDE4NDI3Nn0.urMfizN32NB0m4LK0mgMoEQyAESjZntSUZmsqREQEsE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://adrian-garcia-final-project-back-202301.onrender.com/api/v1/users/friends/64230b56f54dce5b498022da",
+              "protocol": "https",
+              "host": [
+                "adrian-garcia-final-project-back-202301",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "friends",
+                "64230b56f54dce5b498022da"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save plan by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjU5MzJiMTExNTBmMmE5MmQ2ZTYzZiIsImlhdCI6MTY4MDE4NDI3Nn0.urMfizN32NB0m4LK0mgMoEQyAESjZntSUZmsqREQEsE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://adrian-garcia-final-project-back-202301.onrender.com/api/v1/users/save-plan/642540b4f9d134828c9eadaa",
+              "protocol": "https",
+              "host": [
+                "adrian-garcia-final-project-back-202301",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "save-plan",
+                "642540b4f9d134828c9eadaa"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
