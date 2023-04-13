@@ -6,6 +6,7 @@ import {
   getUserByIdController,
   getUsersController,
   savePlanByIdController,
+  deleteSavedPlanByIdController,
 } from './users-controller.js';
 import { queryProjection } from './users-types.js';
 import { CustomHTTPError } from '../../utils/custom-http-error.js';
@@ -272,14 +273,17 @@ describe('Given a savePlanByIdController from user-controller', () => {
     await savePlanByIdController(mockRequest, mockResponse as Response, next);
 
     expect(UserModel.updateOne).toHaveBeenCalledWith(
-      { _id: mockResponse.locals?.id },
+      {
+        _id: mockResponse.locals?.id,
+        savedPlans: { $ne: mockRequest.params.planId },
+      },
       { $push: { savedPlans: mockRequest.params.planId } },
     );
     expect(PlanModel.updateOne).toHaveBeenCalledWith(
       { _id: mockRequest.params.planId },
       { $push: { registeredUsers: mockResponse.locals?.id } },
     );
-    expect(mockResponse.status).toHaveBeenCalledWith(204);
+    expect(mockResponse.status).toHaveBeenCalledWith(200);
     expect(mockResponse.json).toHaveBeenCalledWith({
       msg: 'Plan successfully saved!',
     });
@@ -293,14 +297,17 @@ describe('Given a savePlanByIdController from user-controller', () => {
       }),
     });
 
-    const expectedError = new CustomHTTPError(404, 'Plan not found.');
+    const expectedError = new CustomHTTPError(404, 'Plan is already saved.');
 
     await savePlanByIdController(mockRequest, mockResponse as Response, next);
 
     expect(next).toHaveBeenCalledWith(expectedError);
 
     expect(UserModel.updateOne).toHaveBeenCalledWith(
-      { _id: mockResponse.locals?.id },
+      {
+        _id: mockResponse.locals?.id,
+        savedPlans: { $ne: mockRequest.params.planId },
+      },
       { $push: { savedPlans: mockRequest.params.planId } },
     );
   });
@@ -319,15 +326,14 @@ describe('Given a savePlanByIdController from user-controller', () => {
         modifiedCount: 0,
       }),
     });
-    const expectedError = new CustomHTTPError(
-      404,
-      'User not registered at Plan.',
-    );
 
     await savePlanByIdController(mockRequest, mockResponse as Response, next);
 
     expect(UserModel.updateOne).toHaveBeenCalledWith(
-      { _id: mockResponse.locals?.id },
+      {
+        _id: mockResponse.locals?.id,
+        savedPlans: { $ne: mockRequest.params.planId },
+      },
       { $push: { savedPlans: mockRequest.params.planId } },
     );
     expect(PlanModel.updateOne).toHaveBeenCalledWith(
@@ -335,7 +341,7 @@ describe('Given a savePlanByIdController from user-controller', () => {
       { $push: { registeredUsers: mockResponse.locals?.id } },
     );
 
-    expect(next).toHaveBeenCalledWith(expectedError);
+    expect(next).toHaveBeenCalled();
   });
 
   test('When there is an error during the update, then it should respond with a 500 status', async () => {
@@ -353,8 +359,148 @@ describe('Given a savePlanByIdController from user-controller', () => {
     );
 
     expect(UserModel.updateOne).toHaveBeenCalledWith(
-      { _id: mockResponse.locals?.id },
+      {
+        _id: mockResponse.locals?.id,
+        savedPlans: { $ne: mockRequest.params.planId },
+      },
       { $push: { savedPlans: mockRequest.params.planId } },
+    );
+    expect(next).toHaveBeenCalled();
+  });
+});
+
+describe('Given a deleteSavedPlanByIdController from user-controller', () => {
+  const mockRequest = {
+    params: {
+      planId: 'id2',
+    },
+  } as Request<{ id: string; planId: string }>;
+
+  const mockResponse = {
+    locals: { id: 'id1' },
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+  } as Partial<Response>;
+
+  const next = jest.fn();
+
+  test('When the user is found and the plan is deleted, then it should respond with a 200 status', async () => {
+    UserModel.updateOne = jest.fn().mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce({
+        matchedCount: 1,
+        modifiedCount: 1,
+      }),
+    });
+
+    PlanModel.updateOne = jest.fn().mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce({
+        matchedCount: 1,
+        modifiedCount: 1,
+      }),
+    });
+
+    await deleteSavedPlanByIdController(
+      mockRequest,
+      mockResponse as Response,
+      next,
+    );
+
+    expect(UserModel.updateOne).toHaveBeenCalledWith(
+      {
+        _id: mockResponse.locals?.id,
+      },
+      { $pull: { savedPlans: mockRequest.params.planId } },
+    );
+    expect(PlanModel.updateOne).toHaveBeenCalledWith(
+      { _id: mockRequest.params.planId },
+      { $pull: { registeredUsers: mockResponse.locals?.id } },
+    );
+    expect(mockResponse.status).toHaveBeenCalledWith(200);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      msg: 'Plan successfully deleted!',
+    });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  test('When the plan is not found, then it should respond with a 404 status', async () => {
+    UserModel.updateOne = jest.fn().mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce({
+        matchedCount: 0,
+      }),
+    });
+
+    const expectedError = new CustomHTTPError(404, 'Plan not found.');
+
+    await deleteSavedPlanByIdController(
+      mockRequest,
+      mockResponse as Response,
+      next,
+    );
+
+    expect(next).toHaveBeenCalledWith(expectedError);
+
+    expect(UserModel.updateOne).toHaveBeenCalledWith(
+      {
+        _id: mockResponse.locals?.id,
+      },
+      { $pull: { savedPlans: mockRequest.params.planId } },
+    );
+  });
+
+  test('When the user is not found, then it should respond with a 404 status', async () => {
+    UserModel.updateOne = jest.fn().mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce({
+        matchedCount: 1,
+        modifiedCount: 1,
+      }),
+    });
+
+    PlanModel.updateOne = jest.fn().mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce({
+        matchedCount: 1,
+        modifiedCount: 0,
+      }),
+    });
+
+    await deleteSavedPlanByIdController(
+      mockRequest,
+      mockResponse as Response,
+      next,
+    );
+
+    expect(UserModel.updateOne).toHaveBeenCalledWith(
+      {
+        _id: mockResponse.locals?.id,
+      },
+      { $pull: { savedPlans: mockRequest.params.planId } },
+    );
+    expect(PlanModel.updateOne).toHaveBeenCalledWith(
+      { _id: mockRequest.params.planId },
+      { $pull: { registeredUsers: mockResponse.locals?.id } },
+    );
+
+    expect(next).toHaveBeenCalled();
+  });
+
+  test('When there is an error during the update, then it should respond with a 500 status', async () => {
+    UserModel.updateOne = jest.fn().mockReturnValue({
+      exec: jest.fn().mockResolvedValueOnce({
+        matchedCount: 1,
+        modifiedCount: 0,
+      }),
+    });
+
+    await deleteSavedPlanByIdController(
+      mockRequest,
+      mockResponse as Response,
+      jest.fn(),
+    );
+
+    expect(UserModel.updateOne).toHaveBeenCalledWith(
+      {
+        _id: mockResponse.locals?.id,
+      },
+      { $pull: { savedPlans: mockRequest.params.planId } },
     );
     expect(next).toHaveBeenCalled();
   });
