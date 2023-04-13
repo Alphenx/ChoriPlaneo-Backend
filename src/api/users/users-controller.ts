@@ -96,29 +96,64 @@ export const savePlanByIdController: RequestHandler<{
   const { planId } = req.params;
   const { id } = res.locals;
   try {
-    const updateSavedPlan = await UserModel.updateOne(
-      { _id: id },
+    const planToBeSaved = await UserModel.updateOne(
+      { _id: id, savedPlans: { $ne: planId } },
       { $push: { savedPlans: planId } },
     ).exec();
 
-    if (updateSavedPlan.matchedCount === 0) {
-      throw new CustomHTTPError(404, 'Plan not found.');
+    if (planToBeSaved.matchedCount === 0) {
+      throw new CustomHTTPError(404, 'Plan is already saved.');
     }
 
-    const updatePlanRegisteredUsers = await PlanModel.updateOne(
+    const userRegisteredInPlan = await PlanModel.updateOne(
       { _id: planId },
       { $push: { registeredUsers: id } },
     ).exec();
 
     if (
-      updatePlanRegisteredUsers.matchedCount === 0 ||
-      updatePlanRegisteredUsers.modifiedCount !== 1
+      userRegisteredInPlan.matchedCount === 0 ||
+      userRegisteredInPlan.modifiedCount !== 1
     ) {
-      throw new CustomHTTPError(404, 'User not registered at Plan.');
+      throw new CustomHTTPError(404, 'User not registered in Plan.');
     }
 
-    if (updateSavedPlan.modifiedCount === 1) {
-      return res.status(204).json({ msg: 'Plan successfully saved!' });
+    if (planToBeSaved.modifiedCount === 1) {
+      return res.status(200).json({ msg: 'Plan successfully saved!' });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteSavedPlanByIdController: RequestHandler<{
+  planId: string;
+}> = async (req, res, next) => {
+  const { planId } = req.params;
+  const { id } = res.locals;
+  try {
+    const planToBeDeleteFromSaved = await UserModel.updateOne(
+      { _id: id },
+      { $pull: { savedPlans: planId } },
+    ).exec();
+
+    if (planToBeDeleteFromSaved.matchedCount === 0) {
+      throw new CustomHTTPError(404, 'Plan not found.');
+    }
+
+    const userToBeDeletedFromRegistered = await PlanModel.updateOne(
+      { _id: planId },
+      { $pull: { registeredUsers: id } },
+    ).exec();
+
+    if (
+      userToBeDeletedFromRegistered.matchedCount === 0 ||
+      userToBeDeletedFromRegistered.modifiedCount !== 1
+    ) {
+      throw new CustomHTTPError(404, 'User not found.');
+    }
+
+    if (planToBeDeleteFromSaved.modifiedCount === 1) {
+      return res.status(200).json({ msg: 'Plan successfully deleted!' });
     }
   } catch (error) {
     next(error);
